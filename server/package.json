@@ -11,6 +11,9 @@
     "morgan": "^1.10.0"
   },
   "name": "server",
+  "engine": {
+    "node": "19.8.1"
+  },
   "version": "1.0.0",
   "main": "index.js",
   "devDependencies": {},
