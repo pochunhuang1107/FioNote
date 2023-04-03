@@ -1,0 +1,41 @@
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+
+const userApi = createApi({
+    reducerPath: "user",
+    baseQuery: fetchBaseQuery({
+        baseUrl: "http://localhost:3001/users",
+    }),
+    endpoints(builder) {
+        return {
+            createUser: builder.mutation({
+                query: (user) => {
+                    return {
+                        url: "/register",
+                        body: {
+                            lastName: user.lastName,
+                            firstName: user.firstName,
+                            username: String(user.username).toLocaleLowerCase(),
+                            password: user.password,
+                        },
+                        method: "POST"
+                    }
+                }
+            }),
+            loginUser: builder.mutation({
+                query: (user) => {
+                    return {
+                        url: "/login",
+                        body: {
+                            username: String(user.username).toLocaleLowerCase(),
+                            password: user.password,
+                        },
+                        method: "POST"
+                    }
+                }
+            })
+        }
+    }
+});
+
+export const { useCreateUserMutation, useLoginUserMutation } = userApi;
+export { userApi };
