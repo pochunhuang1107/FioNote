@@ -7,10 +7,12 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 //     });
 // }
 
+const apiUrl = process.env.REACT_APP_API || "http://localhost:3001";
+
 const itemApi = createApi({
     reducerPath: "item",
     baseQuery: fetchBaseQuery({
-        baseUrl: "http://localhost:3001/items",
+        baseUrl: apiUrl+"/items",
         fetchFn: async (...args) => {
             // Remove for production
             // await pause(1000);
