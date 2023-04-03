@@ -25,7 +25,7 @@ const SignupForm = ({ onFormSubmit }) => {
             onSubmit={onSubmit}
         >
             {({ isSubmitting }) => (
-                <Form className="flex flex-col space-y-4 w-96" >
+                <Form className="flex flex-col space-y-4 lg:w-96 sm:w-80" >
                     <div className="flex flex-col">
                         <label className="text-sm font-semibold text-gray-200" htmlFor="firstName">First Name</label>
                         <Field className="px-4 py-2 transition duration-300 border border-gray-300 rounded focus:border-transparent focus:outline-none focus:ring-4 focus:ring-blue-200" type="text" name="firstName" />
