@@ -33,13 +33,14 @@ const itemApi = createApi({
             }),
             createItem: builder.mutation({
                 invalidatesTags: ['Items'],
-                query: ({ _id, inputItem, token }) => {
+                query: ({ _id, inputItem, token, date }) => {
                     return {
                         url: '/create',
                         headers: { Authorization: `Bearer ${token}` },
                         body: {
                             userId: _id,
-                            description: inputItem
+                            description: inputItem,
+                            dateCreated: date,
                         },
                         method: "POST"
                     }
@@ -47,12 +48,13 @@ const itemApi = createApi({
             }),
             completeItem: builder.mutation({
                 invalidatesTags: ['Items'],
-                query: ({ id, token }) => {
+                query: ({ id, token, date }) => {
                     return {
                         url: '/modify',
                         headers: { Authorization: `Bearer ${token}` },
                         body: {
-                            _id: id
+                            _id: id,
+                            date: date,
                         },
                         method: "PATCH"
                     }

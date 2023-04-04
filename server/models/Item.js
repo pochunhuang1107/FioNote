@@ -14,8 +14,16 @@ const itemSchema = new mongoose.Schema({
     isCompleted: {
         type: Boolean,
         default: false,
+    },
+    dateCreated: {
+        type: Date,
+        required: true,
+    },
+    dateCompleted: {
+        type: Date,
+        default: null
     }
-}, {timestamps: true});
+}, { timestamps: true });
 
 const Item = mongoose.model("item", itemSchema);
 

@@ -4,7 +4,7 @@ import Item from "../models/Item.js";
 export const fetchItems = async (req, res) => {
     try {
         const { _id, date } = req.params;
-        const items = await Item.find({ userId: _id, createdAt: { $gte: new Date(date), $lte: new Date(date + 'T23:59:59Z') } });
+        const items = await Item.find({ userId: _id, $or: [{ dateCompleted: null }, { dateCompleted: { $eq: new Date(Number(date)) } }] });
         res.status(200).json(items);
     } catch (err) {
         res.status(500).json({ message: err.message });
@@ -13,12 +13,13 @@ export const fetchItems = async (req, res) => {
 
 // CREATE
 export const createItem = async (req, res) => {
+    console.log(req.body);
     try {
-        const { userId, description } = req.body;
+        const { userId, description, dateCreated } = req.body;
         const newItem = new Item({
-            userId: userId,
+            userId,
             description,
-            isCompleted: false,
+            dateCreated: dateCreated,
         });
         await newItem.save();
 
@@ -31,9 +32,15 @@ export const createItem = async (req, res) => {
 // MODIFY
 export const completeItem = async (req, res) => {
     try {
-        const { _id } = req.body;
+        const { _id, date } = req.body;
+        console.log(typeof date);
         const item = await Item.findById(_id);
         item.isCompleted = !item.isCompleted;
+        if (item.isCompleted) {
+            item.dateCompleted = date;
+        } else {
+            item.dateCompleted = null;
+        }
         item.save();
 
         res.status(200).json(item);
@@ -46,7 +53,7 @@ export const completeItem = async (req, res) => {
 export const removeItem = async (req, res) => {
     try {
         const { _id } = req.body;
-        await Item.findByIdAndDelete(_id );
+        await Item.findByIdAndDelete(_id);
 
         res.sendStatus(200);
     } catch (err) {

@@ -10,7 +10,7 @@ export default function ItemList() {
     const inputClasses = classNames("h-10 border border-white rounded-l-lg rounded-r-none px-5 w-56 focus:w-4/6 duration-500 text-center focus:outline-0 focus:outline-none");
     const buttonClasses = classNames("h-10 border-2 border-white rounded-r-lg px-5 text-stone-800 text-white hover:bg-gray-400 active:bg-gray-500");
     const { _id, token } = useSelector(state => state.auth);
-    const date = new Date().toISOString().split('T')[0];
+    const date = new Date().setHours(0, 0, 0, 0);
     const [inputItem, setInputItem] = useState('');
     const [placeholder, setPlaceholder] = useState('Task for today...');
 
@@ -23,8 +23,10 @@ export default function ItemList() {
     } else if (error) {
         content = "error loading content";
     } else {
+        // const dataArray = Object.entries(data).map(([key, value]) => ({key, ...value}));
+        // dataArray.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
         content = (data.map(item => {
-            return <Item key={item._id} description={item.description} isCompleted={item.isCompleted} id={item._id} token={token} />
+            return <Item key={item._id} description={item.description} isCompleted={item.isCompleted} date={date} id={item._id} token={token} dateCreated={item.dateCreated} />
         }));
     }
 
@@ -36,7 +38,7 @@ export default function ItemList() {
                 setPlaceholder("Input must not be empty");
                 return;
             }
-            createItem({ _id, inputItem, token });
+            createItem({ _id, inputItem, token, date });
             setInputItem('');
             setPlaceholder("Task for today...");
         }
@@ -47,7 +49,7 @@ export default function ItemList() {
             setPlaceholder("Input must not be empty");
             return;
         }
-        createItem({ _id, inputItem, token });
+        createItem({ _id, inputItem, token, date });
         setInputItem('');
         setPlaceholder("Task for today...");
     }
