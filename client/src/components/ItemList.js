@@ -3,6 +3,7 @@ import { useFetchItemsQuery, useCreateItemMutation } from '../store/apis/itemApi
 import { useSelector } from 'react-redux';
 import Item from './Item';
 import Skeleton from './Skeleton';
+import { AiOutlineLoading } from 'react-icons/ai';
 import classNames from 'classnames';
 import { useState } from 'react';
 
@@ -63,7 +64,9 @@ export default function ItemList() {
         <div className="flex flex-col items-center justify-center">
             <div className="inline-flex w-full justify-center">
                 <input type="text" className={inputClasses} placeholder={placeholder} onKeyDown={handleKeyDown} value={inputItem} onChange={onInputChange} disabled={results.isLoading} />
-                <button className={buttonClasses} onClick={handleButtonClick}>Add</button>
+                <button className={buttonClasses} onClick={handleButtonClick}>
+                    {results.isLoading ? <AiOutlineLoading className='animate-spin' /> : "Add"}
+                </button>
             </div>
             <div className="space-y-3 mt-5 w-full px-10">
                 {content}

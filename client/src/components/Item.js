@@ -1,6 +1,7 @@
 import React from 'react'
 import { FiDelete } from 'react-icons/fi';
 import { MdCheckBoxOutlineBlank, MdOutlineCheckBox } from "react-icons/md";
+import { AiOutlineLoading } from 'react-icons/ai';
 import classNames from 'classnames';
 import { useCompleteItemMutation, useRemoveItemMutation } from '../store/apis/itemApi';
 
@@ -8,14 +9,14 @@ export default function Item({ description, isCompleted, dateCreated, date, id, 
     const today = new Date(date).getTime();
     const createdDate = new Date(dateCreated).getTime();
 
-    const completionStatusClasses = classNames("text-xl ml-2 text-start", 
+    const completionStatusClasses = classNames("text-xl ml-2 text-start",
         isCompleted ? 'line-through text-stone-700' : 'text-stone-800',
-        today!==createdDate && 'text-red-800',
+        today !== createdDate && 'text-red-800',
     );
     const checkBoxStatus = (isCompleted ? <MdOutlineCheckBox className='text-xl cursor-pointer' /> : <MdCheckBoxOutlineBlank className='text-xl cursor-pointer' />);
 
     const [completeItem] = useCompleteItemMutation();
-    const [removeItem] = useRemoveItemMutation();
+    const [removeItem, results] = useRemoveItemMutation();
 
     const handleComplete = () => {
         completeItem({ id, token, date });
@@ -32,7 +33,10 @@ export default function Item({ description, isCompleted, dateCreated, date, id, 
                 <p className={completionStatusClasses}>{description}</p>
             </div>
             <div className='min-w-14'>
-                <FiDelete className='text-xl cursor-pointer' onClick={handleRemove} />
+                {results.isLoading ?
+                    <AiOutlineLoading className='animate-spin' /> :
+                    <FiDelete className='text-xl cursor-pointer' onClick={handleRemove} />
+                }
             </div>
         </div>
     )
