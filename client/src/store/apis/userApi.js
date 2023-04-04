@@ -1,11 +1,11 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 //Dev only
-const pause = (duration) => {
-    return new Promise((resolve) => {
-        setTimeout(resolve, duration);
-    });
-}
+// const pause = (duration) => {
+//     return new Promise((resolve) => {
+//         setTimeout(resolve, duration);
+//     });
+// }
 
 const apiUrl = process.env.REACT_APP_API || "http://localhost:3001";
 
@@ -15,7 +15,7 @@ const userApi = createApi({
         baseUrl: apiUrl+"/users",
         fetchFn: async (...args) => {
             // Remove for production
-            await pause(1000);
+            // await pause(1000);
             return fetch(...args);
         }
     }),
