@@ -24,9 +24,9 @@ export default function ItemList() {
     } else if (error) {
         content = "error loading content";
     } else {
-        // const dataArray = Object.entries(data).map(([key, value]) => ({key, ...value}));
-        // dataArray.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
-        content = (data.map(item => {
+        const dataArray = Object.entries(data).map(([key, value]) => ({key, ...value}));
+        dataArray.sort((b, a) => new Date(a.createdAt) - new Date(b.createdAt));
+        content = (dataArray.map(item => {
             return <Item key={item._id} description={item.description} isCompleted={item.isCompleted} date={date} id={item._id} token={token} dateCreated={item.dateCreated} />
         }));
     }

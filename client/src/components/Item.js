@@ -10,8 +10,8 @@ export default function Item({ description, isCompleted, dateCreated, date, id, 
     const createdDate = new Date(dateCreated).getTime();
 
     const completionStatusClasses = classNames("text-xl ml-2 text-start",
-        isCompleted ? 'line-through text-stone-700' : 'text-stone-800',
-        today !== createdDate && 'text-red-800',
+        today === createdDate ? 'text-stone-800' : 'text-red-700',
+        isCompleted && 'line-through',
     );
     const checkBoxStatus = (isCompleted ? <MdOutlineCheckBox className='text-xl cursor-pointer' /> : <MdCheckBoxOutlineBlank className='text-xl cursor-pointer' />);
 
