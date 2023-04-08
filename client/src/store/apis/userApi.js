@@ -63,7 +63,7 @@ const userApi = createApi({
                 }
             }),
             fetchFriendRequest: builder.query({
-                providesTags: ['friendRequest'],
+                providesTags: ['FriendRequest'],
                 query: ({ _id, token }) => {
                     return {
                         url: `/friends/fetch/${_id}`,
@@ -73,7 +73,7 @@ const userApi = createApi({
                 }
             }),
             modifyRead: builder.mutation({
-                invalidatesTags: ['friendRequest'],
+                invalidatesTags: ['FriendRequest'],
                 query: ({ _id, token }) => {
                     return {
                         url: '/friends/read',
@@ -86,7 +86,7 @@ const userApi = createApi({
                 }
             }),
             acceptFriendRequest: builder.mutation({
-                invalidatesTags: ['friendRequest'],
+                invalidatesTags: ['FriendRequest', 'Accept'],
                 query: ({ id, requesterId, token }) => {
                     return {
                         url: '/friends/accept',
@@ -100,7 +100,7 @@ const userApi = createApi({
                 }
             }),
             deleteFriendRequest: builder.mutation({
-                invalidatesTags: ['friendRequest'],
+                invalidatesTags: ['FriendRequest'],
                 query: ({ id, requesterId, token }) => {
                     return {
                         url: '/friends/decline',
@@ -114,6 +114,7 @@ const userApi = createApi({
                 }
             }),
             fetchFriendsList: builder.query({
+                providesTags: ['Accept'],
                 query: ({ _id, token }) => {
                     return {
                         url: `/friends/list/${_id}`,

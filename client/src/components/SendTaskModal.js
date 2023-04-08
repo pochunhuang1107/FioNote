@@ -49,7 +49,12 @@ export default function SendTaskModal({ onClose }) {
                     Select...
                     <GoChevronDown className="text-lg" />
                 </div>
-                {isOpen && <div className="absolute top-full border rounded shadow bg-white w-full pb-1">{renderedOptions}</div>}
+                {isOpen && <div className="absolute top-full border rounded shadow bg-white w-full pb-1">
+                    {renderedOptions.length === 0 ? 
+                        <div className="hover:bg-sky-100 rounded cursor-pointer p-3" onClick={()=>onClose(true)}>No friends</div>
+                        :renderedOptions
+                    }
+                </div>}
             </div>
         </div>,
         document.querySelector(".modal-container")

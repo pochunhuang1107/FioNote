@@ -17,7 +17,14 @@ export default function Notification() {
     const requestRef = useRef();
     const [expanded, setExpanded] = useState(false);
     const { _id, token } = useSelector(state => state.auth);
-    // const { friends } = useSelector(state => state.friends);
+    const { friends } = useSelector(state => state.friends);
+    let friendsDict;
+    if (friends) {
+        friendsDict = friends.reduce((acc, {_id, firstName, lastName}) => {
+            acc[_id] = `${firstName} ${lastName}`;
+            return acc;
+       }, {});
+    }
 
     const { data: tasks, isLoading: taskIsLoading, error: taskError } = useFetchTaskQuery({ _id, token });
     const { data, isLoading, error } = useFetchFriendRequestQuery({ _id, token });
@@ -28,31 +35,16 @@ export default function Notification() {
     const [acceptTask, acceptTaskResults] = useAcceptTaskMutation();
     const [deleteTask, deleteTaskResults] = useDeleteTaskMutation();
 
-    useEffect(() => {
-        if (!expanded) { 
-            return;
-        }
-        const handler = (event) => {
-            if (!bellRef.current || !document.contains(bellRef.current)) {
-                return;
-            }
-            if (!bellRef.current.contains(event.target)) {
-                setExpanded(false);
-            };
-        };
-
-        document.addEventListener('click', handler);
-        return () => document.removeEventListener('click', handler);
-    }, [expanded]);
-
     let friendRequests, count = 0;
+    let taskRequests, taskCount = 0;
+
     if (!isLoading && data && !taskIsLoading && tasks) {
         const dataArray = Object.entries(data).map(([key, value]) => ({ key, ...value }));
         dataArray.sort((b, a) => new Date(a.createdAt) - new Date(b.createdAt));
         friendRequests = dataArray.map(friendRequest => {
             return <Request
                 key={friendRequest._id}
-                fullName={`${friendRequest.user.firstName} ${friendRequest.user.lastName}`}
+                subject={`${friendRequest.user.firstName} ${friendRequest.user.lastName}`}
                 isRead={friendRequest.read} 
                 id={_id} 
                 requesterId={friendRequest.user._id}
@@ -68,14 +60,14 @@ export default function Notification() {
         friendRequests = error;
     }
 
-    let taskRequests, taskCount = 0;
+    
     if (!taskIsLoading && tasks && !isLoading && data) {
         const dataArray = Object.entries(tasks).map(([key, value]) => ({ key, ...value }));
         dataArray.sort((b, a) => new Date(a.createdAt) - new Date(b.createdAt));
         taskRequests = dataArray.map(taskRequest => {
             return <Request
                 key={taskRequest._id}
-                fullName={taskRequest.description}
+                subject={taskRequest.description}
                 isRead={taskRequest.read} 
                 id={taskRequest._id} 
                 requesterId={taskRequest.createdBy}
@@ -84,12 +76,39 @@ export default function Notification() {
                 deleteRequest={deleteTask}
                 acceptResults={acceptTaskResults}
                 deleteResults={deleteTaskResults}
+                from={friendsDict[taskRequest.createdBy]}
                 />
         });
         taskCount = tasks.filter(taskRequest => !taskRequest.read).length;
     } else if (taskError) {
         taskRequests = taskError;
     }
+
+    useEffect(() => {
+        if (!expanded) { 
+            return;
+        }
+        const handler = (event) => {
+            if (!bellRef.current || !document.contains(bellRef.current)) {
+                return;
+            }
+            if (!bellRef.current.contains(event.target)) {
+                if (count) {
+                    modifyRead({ _id, token });
+                }
+                if (taskCount) {
+                    modifyReadTask({ _id, token });
+                }
+                setExpanded(false);
+            };
+        };
+
+        document.addEventListener('click', handler);
+        return () => document.removeEventListener('click', handler);
+    }, [expanded, _id, token, count, taskCount, modifyRead, modifyReadTask]);
+
+    
+
 
     const handleNotificationClicked = (event) => {
         if (!isLoading && !taskIsLoading) {
@@ -99,11 +118,13 @@ export default function Notification() {
                 }
             }
             setExpanded(!expanded);
-            if (count) {
-                modifyRead({ _id, token });
-            }
-            if (taskCount) {
-                modifyReadTask({ _id, token });
+            if (expanded) {
+                if (count) {
+                    modifyRead({ _id, token });
+                }
+                if (taskCount) {
+                    modifyReadTask({ _id, token });
+                }
             }
         }
     }
