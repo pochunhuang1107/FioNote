@@ -12,7 +12,7 @@ const apiUrl = process.env.REACT_APP_API || "http://localhost:3001";
 const userApi = createApi({
     reducerPath: "user",
     baseQuery: fetchBaseQuery({
-        baseUrl: apiUrl+"/users",
+        baseUrl: apiUrl + "/users",
         fetchFn: async (...args) => {
             // Remove for production
             // await pause(1000);
@@ -28,8 +28,9 @@ const userApi = createApi({
                         body: {
                             lastName: user.lastName,
                             firstName: user.firstName,
-                            username: String(user.username).toLocaleLowerCase(),
+                            username: user.username,
                             password: user.password,
+                            email: user.email,
                         },
                         method: "POST"
                     }
@@ -40,10 +41,84 @@ const userApi = createApi({
                     return {
                         url: "/login",
                         body: {
-                            username: String(user.username).toLocaleLowerCase(),
+                            username: user.username,
                             password: user.password,
                         },
                         method: "POST"
+                    }
+                }
+            }),
+            sendFriendRequest: builder.mutation({
+                query: ({ _id, searchTerm, token }) => {
+                    return {
+                        url: "/friends/request",
+                        headers: { Authorization: `Bearer ${token}` },
+                        body: {
+                            requesterId: _id,
+                            recipientEmail: searchTerm,
+                            recipientUsername: searchTerm,
+                        },
+                        method: "POST",
+                    }
+                }
+            }),
+            fetchFriendRequest: builder.query({
+                providesTags: ['friendRequest'],
+                query: ({ _id, token }) => {
+                    return {
+                        url: `/friends/fetch/${_id}`,
+                        headers: { Authorization: `Bearer ${token}` },
+                        method: "GET",
+                    }
+                }
+            }),
+            modifyRead: builder.mutation({
+                invalidatesTags: ['friendRequest'],
+                query: ({ _id, token }) => {
+                    return {
+                        url: '/friends/read',
+                        headers: { Authorization: `Bearer ${token}` },
+                        body: {
+                            _id: _id
+                        },
+                        method: "POST",
+                    }
+                }
+            }),
+            acceptFriendRequest: builder.mutation({
+                invalidatesTags: ['friendRequest'],
+                query: ({ id, requesterId, token }) => {
+                    return {
+                        url: '/friends/accept',
+                        headers: { Authorization: `Bearer ${token}` },
+                        body: {
+                            recipientId: id,
+                            requesterId: requesterId,
+                        },
+                        method: "POST",
+                    }
+                }
+            }),
+            deleteFriendRequest: builder.mutation({
+                invalidatesTags: ['friendRequest'],
+                query: ({ id, requesterId, token }) => {
+                    return {
+                        url: '/friends/decline',
+                        headers: { Authorization: `Bearer ${token}` },
+                        body: {
+                            recipientId: id,
+                            requesterId: requesterId,
+                        },
+                        method: "POST",
+                    }
+                }
+            }),
+            fetchFriendsList: builder.query({
+                query: ({ _id, token }) => {
+                    return {
+                        url: `/friends/list/${_id}`,
+                        headers: { Authorization: `Bearer ${token}` },
+                        method: "GET",
                     }
                 }
             })
@@ -51,5 +126,13 @@ const userApi = createApi({
     }
 });
 
-export const { useCreateUserMutation, useLoginUserMutation } = userApi;
+export const { useCreateUserMutation,
+    useLoginUserMutation,
+    useSendFriendRequestMutation,
+    useFetchFriendRequestQuery,
+    useModifyReadMutation,
+    useAcceptFriendRequestMutation,
+    useDeleteFriendRequestMutation,
+    useFetchFriendsListQuery,
+} = userApi;
 export { userApi };

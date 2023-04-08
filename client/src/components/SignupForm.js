@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import classNames from 'classnames';
 import * as Yup from "yup";
 
-const SignupForm = ({ onFormSubmit }) => {
+const SignupForm = () => {
     const errorMessageClasses = classNames("text-red-600 text-sm");
     const inputClasses = classNames("px-4 py-2 transition duration-300 border border-gray-300 rounded focus:border-transparent focus:outline-none focus:ring-4 focus:ring-blue-200");
 
@@ -22,6 +22,7 @@ const SignupForm = ({ onFormSubmit }) => {
             .max(50, 'First name must be within 50 characters!').required('First name required'),
         lastName: Yup.string().min(2, 'Last name must be at least 2 characters.')
             .max(50, 'Last name must be within 50 characters!').required('Last name required'),
+        email: Yup.string().email('Invalid email').required('Email required'),
         username: Yup.string().min(4, 'Username must be at least 4 characters.')
             .max(50, 'Username must be within 50 characters!').required('Username required'),
         password: Yup.string().min(4, 'Password must be at least 4 characters.')
@@ -32,12 +33,14 @@ const SignupForm = ({ onFormSubmit }) => {
         firstName: '',
         lastName: '',
         username: '',
-        password: ''
+        password: '',
+        email: '',
     };
 
     const onSubmit = async (values) => {
         const response = await createUser(values);
         const data = await response.data;
+
         if (data) {
             const loginResponse = await loginUser(values);
             const loginData = await loginResponse.data;
@@ -52,7 +55,7 @@ const SignupForm = ({ onFormSubmit }) => {
                 navigate("/home");
             }
         } else {
-            alert("Username has been taken. Please try another one.");
+            alert(response.error.data);
         }
     };
 
@@ -75,6 +78,13 @@ const SignupForm = ({ onFormSubmit }) => {
                         <Field className={inputClasses} type="text" name="lastName" />
                         <div className={errorMessageClasses}><ErrorMessage name="lastName" /></div>
                     </div>
+
+                    <div className="flex flex-col mb-2">
+                        <label className="text-sm font-semibold text-gray-200" htmlFor="email">Email</label>
+                        <Field className={inputClasses} type="email" name="email" />
+                        <div className={errorMessageClasses}><ErrorMessage name="email" /></div>
+                    </div>
+
                     <div className="flex flex-col mb-2">
                         <label className="text-sm font-semibold text-gray-200" htmlFor="username">Username</label>
                         <Field className={inputClasses} type="text" name="username" />

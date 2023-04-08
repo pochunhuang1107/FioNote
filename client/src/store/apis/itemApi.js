@@ -22,7 +22,7 @@ const itemApi = createApi({
     endpoints(builder) {
         return {
             fetchItems: builder.query({
-                providesTags: ['Items'],
+                providesTags: ['Items', 'AcceptTask'],
                 query: ({ _id, date, token }) => {
                     return {
                         url: `/${_id}/${date}`,
@@ -72,10 +72,80 @@ const itemApi = createApi({
                         method: "DELETE"
                     }
                 }
-            })
+            }),
+            sendTask: builder.mutation({
+                query: ({ requester, recipient, description, dateCreated, token }) => {
+                    return {
+                        url: '/request/send',
+                        headers: { Authorization: `Bearer ${token}` },
+                        body: {
+                            requester, recipient, description, dateCreated
+                        },
+                        method: "POST"
+                    }
+                }
+            }),
+            fetchTask: builder.query({
+                providesTags: ['Tasks'],
+                query: ({ _id, token }) => {
+                    return {
+                        url: `/request/fetch/${_id}`,
+                        headers: { Authorization: `Bearer ${token}` },
+                        method: "GET",
+                    }
+                }
+            }),
+            modifyReadTask: builder.mutation({
+                invalidatesTags: ['Tasks'],
+                query: ({ _id, token }) => {
+                    return {
+                        url: '/request/read',
+                        headers: { Authorization: `Bearer ${token}` },
+                        body: {
+                            _id
+                        },
+                        method: "PATCH"
+                    }
+                }
+            }),
+            acceptTask: builder.mutation({
+                invalidatesTags: ['Tasks', 'AcceptTask'],
+                query: ({ id, token }) => {
+                    return {
+                        url: '/request/accept',
+                        headers: { Authorization: `Bearer ${token}` },
+                        body: {
+                            _id: id
+                        },
+                        method: "PATCH"
+                    }
+                }
+            }),
+            deleteTask: builder.mutation({
+                invalidatesTags: ['Tasks'],
+                query: ({ id, token }) => {
+                    return {
+                        url: '/request/delete',
+                        headers: { Authorization: `Bearer ${token}` },
+                        body: {
+                            _id: id
+                        },
+                        method: "DELETE"
+                    }
+                }
+            }),
         }
     }
 });
 
-export const { useFetchItemsQuery, useCreateItemMutation, useCompleteItemMutation, useRemoveItemMutation } = itemApi;
+export const { useFetchItemsQuery, 
+            useCreateItemMutation, 
+            useCompleteItemMutation, 
+            useRemoveItemMutation,
+            useAcceptTaskMutation,
+            useDeleteTaskMutation,
+            useFetchTaskQuery,
+            useSendTaskMutation,
+            useModifyReadTaskMutation,
+        } = itemApi;
 export { itemApi };

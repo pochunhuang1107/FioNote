@@ -5,6 +5,7 @@ import { persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } fro
 import { userApi } from './apis/userApi';
 import { itemApi } from './apis/itemApi';
 import authReducer from './slices/authSlice';
+import friendsReducer from './slices/friendsSlice';
 import storage from 'redux-persist/lib/storage';
 
 const persistConfig = {
@@ -15,6 +16,7 @@ const persistConfig = {
 
 const rootReducer = combineReducers({
     auth: authReducer,
+    friends: friendsReducer,
     [userApi.reducerPath]: userApi.reducer,
     [itemApi.reducerPath]: itemApi.reducer,
 });
@@ -35,5 +37,22 @@ export const store = configureStore({
 
 setupListeners(store.dispatch);
 
-export { useCreateUserMutation, useLoginUserMutation } from './apis/userApi';
-export { useFetchItemsQuery, useCreateItemMutation, useCompleteItemMutation, useRemoveItemMutation } from './apis/itemApi';
+export { useCreateUserMutation, 
+        useLoginUserMutation, 
+        useSendFriendRequestMutation, 
+        useFetchFriendRequestQuery,
+        useModifyReadMutation,
+        useAcceptFriendRequestMutation,
+        useDeleteFriendRequestMutation,
+        useFetchFriendsListQuery,
+} from './apis/userApi';
+export { useFetchItemsQuery, 
+        useCreateItemMutation, 
+        useCompleteItemMutation, 
+        useRemoveItemMutation ,
+        useAcceptTaskMutation,
+        useDeleteTaskMutation,
+        useFetchTaskQuery,
+        useModifyReadTaskMutation,
+        useSendTaskMutation,
+} from './apis/itemApi';

@@ -21,7 +21,19 @@ const itemSchema = new mongoose.Schema({
     },
     dateCompleted: {
         type: Date,
-        default: null
+        default: null,
+    },
+    pending: {
+        type: Boolean,
+        default: false,
+    },
+    createdBy: {
+        type: String,
+        required: true,
+    },
+    read: {
+        type: Boolean,
+        default: true,
     }
 }, { timestamps: true });
 
