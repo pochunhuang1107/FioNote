@@ -27,7 +27,7 @@ const LoginForm = () => {
                     firstName: data.user.firstName,
                 })
             );
-            navigate("/home");
+            navigate("/");
         }
     };
 

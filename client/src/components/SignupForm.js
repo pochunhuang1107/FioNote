@@ -24,8 +24,11 @@ const SignupForm = () => {
             .max(50, 'Last name must be within 50 characters!').required('Last name required'),
         email: Yup.string().email('Invalid email').required('Email required'),
         username: Yup.string().min(4, 'Username must be at least 4 characters.')
-            .max(50, 'Username must be within 50 characters!').required('Username required'),
+            .max(50, 'Username must be within 50 characters!')
+            .matches(/^[a-zA-Z0-9@.]+$/, "Spaces and special character are not allowed")
+            .required('Username required'),
         password: Yup.string().min(4, 'Password must be at least 4 characters.')
+            .matches(/^[a-zA-Z0-9~!@#$%^&*()_+-=<>/"'{}]+$/, "Space is not allowed")
             .max(50, 'Password must be within 50 characters!').required('Password required'),
     });
 
@@ -52,7 +55,7 @@ const SignupForm = () => {
                         firstName: loginData.user.firstName,
                     })
                 );
-                navigate("/home");
+                navigate("/");
             }
         } else {
             alert(response.error.data);
