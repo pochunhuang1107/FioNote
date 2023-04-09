@@ -11,6 +11,7 @@ import { setSelected } from '../store/slices/friendsSlice';
 export default function ItemList() {
     const inputClasses = classNames("h-10 text-stone-600 border border-white rounded-l-lg rounded-r-none px-5 w-56 select-none focus:w-4/6 duration-500 text-center focus:outline-0 focus:outline-none");
     const buttonClasses = classNames("h-10 border-2 border-white rounded-r-lg px-5 text-stone-800 text-white select-none hover:bg-gray-400 active:bg-gray-500");
+    
     const { _id, token } = useSelector(state => state.auth);
     const { selectedId, selectedName } = useSelector(state => state.friends);
     const presetPlaceholder = (selectedName ? `Task for ${selectedName}` : "Task for today...");
@@ -18,6 +19,7 @@ export default function ItemList() {
     const date = new Date().setHours(0, 0, 0, 0);
     const [inputItem, setInputItem] = useState('');
     const [placeholder, setPlaceholder] = useState(presetPlaceholder);
+    const [isComposing, setIsComposing] = useState(false);
 
     const { data, isLoading, error } = useFetchItemsQuery({ _id, date, token });
     const [createItem, results] = useCreateItemMutation();
@@ -43,8 +45,7 @@ export default function ItemList() {
 
     const handleKeyDown = (event) => {
         const keyEvent = event.key;
-
-        if (keyEvent === 'Enter') {
+        if (keyEvent === 'Enter' && !isComposing) {
             if (inputItem.length < 1 || inputItem.trim().length < 1) {
                 setInputItem('');
                 setPlaceholder("Input must not be empty");
@@ -114,10 +115,18 @@ export default function ItemList() {
         setPlaceholder(presetPlaceholder);
     }
 
+    const handleCompositionStart = () => {
+        setIsComposing(true);
+    }
+
+    const handleCompositionEnd = () => {
+        setIsComposing(false)
+    }
+
     return (
         <div className="flex flex-col items-center justify-center">
             <div className="inline-flex w-full justify-center">
-                <input type="text" className={inputClasses} placeholder={placeholder} onKeyDown={handleKeyDown} value={inputItem} onChange={onInputChange} disabled={results.isLoading} />
+                <input type="text" className={inputClasses} placeholder={placeholder} onCompositionStart={handleCompositionStart} onCompositionEnd={handleCompositionEnd} onKeyDown={handleKeyDown} value={inputItem} onChange={onInputChange} disabled={results.isLoading} />
                 <button className={buttonClasses} onClick={handleButtonClick}>
                     {results.isLoading || sendTaskResults.isLoading ? <AiOutlineLoading className='animate-spin' /> : presetButton}
                 </button>
