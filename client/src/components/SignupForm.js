@@ -19,17 +19,22 @@ const SignupForm = () => {
 
     const SignupSchema = Yup.object().shape({
         firstName: Yup.string().min(2, 'First name must be at least 2 characters.')
-            .max(50, 'First name must be within 50 characters!').required('First name required'),
+            .max(50, 'First name must be within 50 characters!')
+            .matches(/^[a-zA-Z0-9]+$/, "Spaces and special character are not allowed")
+            .required('First name required'),
         lastName: Yup.string().min(2, 'Last name must be at least 2 characters.')
-            .max(50, 'Last name must be within 50 characters!').required('Last name required'),
-        email: Yup.string().email('Invalid email').required('Email required'),
+            .max(50, 'Last name must be within 50 characters!')
+            .matches(/^[a-zA-Z0-9]+$/, "Spaces and special character are not allowed")
+            .required('Last name required'),
+        email: Yup.string().email('Invalid email').trim().required('Email required'),
         username: Yup.string().min(4, 'Username must be at least 4 characters.')
             .max(50, 'Username must be within 50 characters!')
             .matches(/^[a-zA-Z0-9@.]+$/, "Spaces and special character are not allowed")
             .required('Username required'),
         password: Yup.string().min(4, 'Password must be at least 4 characters.')
+            .max(50, 'Password must be within 50 characters!')
             .matches(/^[a-zA-Z0-9~!@#$%^&*()_+-=<>/"'{}]+$/, "Space is not allowed")
-            .max(50, 'Password must be within 50 characters!').required('Password required'),
+            .required('Password required'),
     });
 
     const initialValues = {
