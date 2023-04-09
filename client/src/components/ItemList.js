@@ -43,6 +43,7 @@ export default function ItemList() {
 
     const handleKeyDown = (event) => {
         const keyEvent = event.key;
+
         if (keyEvent === 'Enter') {
             if (inputItem.length < 1 || inputItem.trim().length < 1) {
                 setInputItem('');

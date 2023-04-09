@@ -145,10 +145,10 @@ export default function Notification() {
             {expanded && (<div ref={requestRef} className='absolute w-80 top-40 mr-80 py-2 bg-white rounded-l-lg rounded-br-lg shadow-lg border'>
                 <div className='text-xs text-gray-500 select-none text-center'>Friend Request</div>
                 <hr />
-                {data.length ? friendRequests : <div className='px-4 py-2 text-sm text-gray-600'>Nothing to show...</div>}
+                {data?.length ? friendRequests : <div className='px-4 py-2 text-sm text-gray-600'>Nothing to show...</div>}
                 <div className='text-xs text-gray-500 select-none text-center'>Task Request</div>
                 <hr />
-                {tasks.length ? taskRequests :<div className='px-4 py-2 text-sm text-gray-600'>Nothing to show...</div>}
+                {tasks?.length ? taskRequests :<div className='px-4 py-2 text-sm text-gray-600'>Nothing to show...</div>}
             </div>)}
         </div>
     )

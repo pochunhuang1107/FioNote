@@ -112,11 +112,11 @@ export const declineFriendRequest = async (req, res) => {
         const requester = await User.findById(requesterId);
         const recipientIndex = requester.friends.findIndex(friend => friend.user.equals(recipientId));
         const requesterIndex = recipient.friends.findIndex(friend => friend.user.equals(requesterId));
-        if (!requesterIndex) {
+        if (requesterIndex !== -1) {
             recipient.friends.pull(recipient.friends[requesterIndex]._id);
             await recipient.save();
         }
-        if (!recipientIndex) {
+        if (recipientIndex !== -1) {
             requester.friends.pull(requester.friends[recipientIndex]._id);
             await requester.save();
         }

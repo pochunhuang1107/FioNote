@@ -45,7 +45,7 @@ export default function SendTaskModal({ onClose }) {
                 onClick={handleClose}
             />
             <div className="fixed w-64 top-20 left-1/2 transform -translate-x-1/2 mt-14 flex flex-col" onClick={handleDropdown}>
-                <div className="border rounded p-3 shadow bg-white w-full flex justify-between items-center cursor-pointer">
+                <div className="border rounded p-3 shadow bg-white w-full flex justify-between items-center select-none cursor-pointer">
                     Select...
                     <GoChevronDown className="text-lg" />
                 </div>

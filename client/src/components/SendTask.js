@@ -13,7 +13,7 @@ export default function SendTask() {
     const { data, isLoading, error } = useFetchFriendsListQuery({ _id, token });
 
     useEffect(() => {
-        if (!isLoading) {
+        if (!isLoading && data) {
             const users = data.map(user => user.user);
             dispatch(setFriends({
                 friends: users
