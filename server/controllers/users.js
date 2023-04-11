@@ -70,7 +70,7 @@ export const sendFriendRequest = async (req, res) => {
                 user: requesterId,
             });
             await recipient.save();
-            res.status(201).json({ data: "Successfully added user." });
+            res.status(201).json({ data: "Successfully added user.", selectedId: recipient._id });
         } else {
             res.status(400).send("Duplicated request.");
         }

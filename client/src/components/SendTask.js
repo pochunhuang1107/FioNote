@@ -27,8 +27,8 @@ export default function SendTask() {
 
     return (
         <div className='w-7 text-2xl text-stone-700 flex items-center justify-center hover:text-stone-800'>
-            <RiTaskLine className='cursor-pointer' onClick={handleSearchClick} />
-            {showed && !error && <SendTaskModal onClose={handleSearchClick} />}
+            {!isLoading && !error && <RiTaskLine className='cursor-pointer' onClick={handleSearchClick} />}
+            {showed && !isLoading && <SendTaskModal onClose={handleSearchClick} />}
         </div>
     )
 }

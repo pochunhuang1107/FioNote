@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import { useSendFriendRequestMutation } from "../store";
 import { AiOutlineLoading } from 'react-icons/ai';
 
-export default function FriendSearchModal({ onClose }) {
+export default function FriendSearchModal({ onClose, socket }) {
     const [sendFriendRequest, results] = useSendFriendRequestMutation();
     const [placeholder, setPlaceholder] = useState('Enter username or email...');
     const [searchTerm, setSearchTerm] = useState('');
@@ -16,6 +16,12 @@ export default function FriendSearchModal({ onClose }) {
             document.body.classList.remove('overflow-hidden');
         }
     });
+
+    const sendMessage = (selectedId) => {
+        socket.emit("send_message", {
+            id: selectedId
+        });
+    };
 
     const handleClose = () => {
         onClose(false);
@@ -35,6 +41,7 @@ export default function FriendSearchModal({ onClose }) {
                 alert(data.data);
                 setSearchTerm("");
                 setPlaceholder("Enter username or email...");
+                sendMessage(data.selectedId);
             } else {
                 setSearchTerm("");
                 setPlaceholder(response.error.data);
@@ -57,8 +64,9 @@ export default function FriendSearchModal({ onClose }) {
                     onFocus={() => setPlaceholder("Enter username or email...")}
                     onKeyDown={handleSubmit}
                     value={searchTerm}
+                    disabled={results.isLoading}
                 />
-                <button className="h-10 flex items-center justify-center rounded-lg select-none text-white bg-sky-500 hover:bg-sky-600" name="submit" onClick={handleSubmit}>
+                <button className="h-10 flex items-center justify-center rounded-lg select-none text-white bg-sky-500 hover:bg-sky-600" name="submit" onClick={handleSubmit} disabled={results.isLoading}>
                     {results.isLoading ? <AiOutlineLoading className='animate-spin text-2xl' /> : "Add"}
                 </button>
             </div>

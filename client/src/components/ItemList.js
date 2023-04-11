@@ -1,4 +1,3 @@
-// import Item from './Item'
 import { useFetchItemsQuery, useCreateItemMutation, useSendTaskMutation } from '../store/apis/itemApi';
 import { useDispatch, useSelector } from 'react-redux';
 import Item from './Item';
@@ -8,10 +7,10 @@ import classNames from 'classnames';
 import { useEffect, useState } from 'react';
 import { setSelected } from '../store/slices/friendsSlice';
 
-export default function ItemList() {
+export default function ItemList({ socket }) {
     const inputClasses = classNames("h-10 text-stone-600 border border-white rounded-l-lg rounded-r-none px-5 w-56 select-none focus:w-4/6 duration-500 text-center focus:outline-0 focus:outline-none");
     const buttonClasses = classNames("h-10 border-2 border-white rounded-r-lg px-5 text-stone-800 text-white select-none hover:bg-gray-400 active:bg-gray-500");
-    
+
     const { _id, token } = useSelector(state => state.auth);
     const { selectedId, selectedName } = useSelector(state => state.friends);
     const presetPlaceholder = (selectedName ? `Task for ${selectedName}` : "Task for today...");
@@ -43,6 +42,12 @@ export default function ItemList() {
         }));
     }
 
+    const sendMessage = () => {
+        socket.emit("send_message", {
+            id: selectedId
+        });
+    };
+
     const handleKeyDown = (event) => {
         const keyEvent = event.key;
         if (keyEvent === 'Enter' && !isComposing) {
@@ -61,6 +66,7 @@ export default function ItemList() {
                         dateCreated: date,
                         token,
                     })
+                    sendMessage();
                     dispatch(setSelected({
                         user: null,
                         firstName: null,
@@ -92,6 +98,7 @@ export default function ItemList() {
                     dateCreated: date,
                     token,
                 })
+                sendMessage();
                 dispatch(setSelected({
                     user: null,
                     firstName: null,
