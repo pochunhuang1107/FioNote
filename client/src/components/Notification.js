@@ -12,8 +12,9 @@ import {
     useDeleteTaskMutation,
 } from '../store';
 import Request from './Request';
+import { socket } from '../socket';
 
-export default function Notification({ socket }) {
+export default function Notification() {
     const bellRef = useRef();
     const requestRef = useRef();
     const [expanded, setExpanded] = useState(false);
@@ -41,7 +42,7 @@ export default function Notification({ socket }) {
         socket.on("receive_message", () => {
             setUpdate(update+1);
         });
-    }, [socket, update]);
+    }, [update]);
 
     let friendRequests, count = 0;
     let taskRequests, taskCount = 0;

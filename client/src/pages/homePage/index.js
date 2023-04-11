@@ -5,11 +5,8 @@ import FriendSearch from '../../components/FriendSearch';
 import SendTask from '../../components/SendTask';
 import { useDispatch, useSelector } from 'react-redux';
 import { setSelected } from '../../store/slices/friendsSlice';
-import { io } from 'socket.io-client';
 import { useEffect } from 'react';
-
-const url = process.env.REACT_APP_API || "http://localhost:3001";
-const socket = io(url);
+import { socket } from '../../socket';
 
 export default function HomePage() {
     const { firstName, _id } = useSelector(state => state.auth);
@@ -24,6 +21,9 @@ export default function HomePage() {
 
     useEffect(() => {
         if (_id) {
+            if (!socket.connected) {
+                socket.connect();
+            }
             socket.on("connect", () => {
                 socket.emit("user connected", _id);
             })
@@ -50,15 +50,15 @@ export default function HomePage() {
                     </div>
                     <div className='flex justify-end items-center'>
                         <SendTask />
-                        <FriendSearch socket={socket} />
-                        <Notification socket={socket} />
+                        <FriendSearch />
+                        <Notification />
                     </div>
                 </div>
             </div>
             <div className="flex flex-col items-center max-w-2xl w-full h-full mx-10 mb-10 mt-3 bg-slate-800 bg-opacity-20 py-10 rounded-lg">
                 <h2 className="text-4xl text-white font-light">{date}</h2>
                 <div className="my-8 w-full h-full">
-                    <ItemList socket={socket} />
+                    <ItemList />
                 </div>
             </div>
             <Logout />

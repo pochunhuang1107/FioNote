@@ -3,8 +3,9 @@ import ReactDOM from "react-dom";
 import { useSelector } from "react-redux";
 import { useSendFriendRequestMutation } from "../store";
 import { AiOutlineLoading } from 'react-icons/ai';
+import { socket } from "../socket";
 
-export default function FriendSearchModal({ onClose, socket }) {
+export default function FriendSearchModal({ onClose }) {
     const [sendFriendRequest, results] = useSendFriendRequestMutation();
     const [placeholder, setPlaceholder] = useState('Enter username or email...');
     const [searchTerm, setSearchTerm] = useState('');

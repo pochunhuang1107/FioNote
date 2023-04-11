@@ -6,8 +6,9 @@ import { AiOutlineLoading } from 'react-icons/ai';
 import classNames from 'classnames';
 import { useEffect, useState } from 'react';
 import { setSelected } from '../store/slices/friendsSlice';
+import { socket } from '../socket';
 
-export default function ItemList({ socket }) {
+export default function ItemList() {
     const inputClasses = classNames("h-10 text-stone-600 border border-white rounded-l-lg rounded-r-none px-5 w-56 select-none focus:w-4/6 duration-500 text-center focus:outline-0 focus:outline-none");
     const buttonClasses = classNames("h-10 border-2 border-white rounded-r-lg px-5 text-stone-800 text-white select-none hover:bg-gray-400 active:bg-gray-500");
 

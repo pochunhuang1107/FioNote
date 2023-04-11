@@ -6,6 +6,7 @@ import { useSelector } from 'react-redux';
 export default function App() {
     const auth = useSelector(state => state.auth);
     const isAuth = auth.token;
+
     return (
         <BrowserRouter>
             <Routes>

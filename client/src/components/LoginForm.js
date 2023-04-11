@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { setLogin } from '../store/slices/authSlice';
 import { AiOutlineLoading } from 'react-icons/ai';
+import { socket } from '../socket';
 
 const LoginForm = () => {
     const [loginUser, results] = useLoginUserMutation();
@@ -28,6 +29,7 @@ const LoginForm = () => {
                 })
             );
             navigate("/");
+            socket.connect();
         }
     };
 
