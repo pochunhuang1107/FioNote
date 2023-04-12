@@ -11,7 +11,7 @@ export default function Logout() {
         dispatch(setFriends({
             friends: null
         }));
-        if (socket) {
+        if (socket.connected) {
             socket.disconnect();
         }
         dispatch(setLogout());

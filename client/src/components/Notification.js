@@ -42,6 +42,9 @@ export default function Notification() {
         socket.on("receive_message", () => {
             setUpdate(update+1);
         });
+        return () => {
+            socket.off("receive_message");
+        }
     }, [update]);
 
     let friendRequests, count = 0;

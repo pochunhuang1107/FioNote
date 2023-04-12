@@ -21,14 +21,18 @@ export default function HomePage() {
 
     useEffect(() => {
         if (_id) {
-            if (!socket.connected) {
-                socket.connect();
-            }
             socket.on("connect", () => {
                 socket.emit("user connected", _id);
-            })
+            });
+            socket.connect();
         }
-    }, [_id])
+        return () => {
+            if (_id) {
+                socket.off("connect");
+                socket.disconnect();
+            }
+        };
+    }, [_id]);
 
     const handleClick = () => {
         dispatch(

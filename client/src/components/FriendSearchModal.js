@@ -16,7 +16,7 @@ export default function FriendSearchModal({ onClose }) {
         return () => {
             document.body.classList.remove('overflow-hidden');
         }
-    });
+    }, []);
 
     const sendMessage = (selectedId) => {
         socket.emit("send_message", {
@@ -72,6 +72,6 @@ export default function FriendSearchModal({ onClose }) {
                 </button>
             </div>
         </div>,
-        document.querySelector(".modal-container")
+        document.querySelector("#modal-container")
     );
 }

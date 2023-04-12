@@ -14,7 +14,7 @@ export default function SendTaskModal({ onClose }) {
         return () => {
             document.body.classList.remove('overflow-hidden');
         }
-    });
+    }, []);
 
     const handleClose = () => {
         onClose(false);
@@ -57,6 +57,6 @@ export default function SendTaskModal({ onClose }) {
                 </div>}
             </div>
         </div>,
-        document.querySelector(".modal-container")
+        document.querySelector("#modal-container")
     );
 }

@@ -49,7 +49,7 @@ export default function ItemList() {
         });
     };
 
-    const handleKeyDown = (event) => {
+    const handleKeyDown = async (event) => {
         const keyEvent = event.key;
         if (keyEvent === 'Enter' && !isComposing) {
             if (inputItem.length < 1 || inputItem.trim().length < 1) {
@@ -60,18 +60,19 @@ export default function ItemList() {
             if (selectedName) {
                 const confirmed = window.confirm(`Please confirm if you are sending this task request to ${selectedName}`);
                 if (confirmed) {
-                    sendTask({
+                    await sendTask({
                         requester: _id,
                         recipient: selectedId,
                         description: inputItem,
                         dateCreated: date,
                         token,
-                    })
+                    });
                     sendMessage();
                     dispatch(setSelected({
                         user: null,
                         firstName: null,
                     }));
+                    alert(`Successfully send out task to ${selectedName}`);
                 } else {
                     setInputItem('');
                     return;
@@ -84,7 +85,7 @@ export default function ItemList() {
         }
     }
 
-    const handleButtonClick = () => {
+    const handleButtonClick = async () => {
         if (inputItem.length < 1 || inputItem.trim().length < 1) {
             setPlaceholder("Input must not be empty");
             return;
@@ -92,7 +93,7 @@ export default function ItemList() {
         if (selectedName) {
             const confirmed = window.confirm(`Please confirm if you are sending this task request to ${selectedName}`);
             if (confirmed) {
-                sendTask({
+                await sendTask({
                     requester: _id,
                     recipient: selectedId,
                     description: inputItem,
@@ -100,13 +101,11 @@ export default function ItemList() {
                     token,
                 })
                 sendMessage();
-                dispatch(setSelected({
-                    user: null,
-                    firstName: null,
-                }));
-                if (sendTaskResults.isSuccess) {
+                    dispatch(setSelected({
+                        user: null,
+                        firstName: null,
+                    }));
                     alert(`Successfully send out task to ${selectedName}`);
-                }
             } else {
                 setInputItem('');
                 return;

@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import LoginPage from "./pages/loginPage";
 import HomePage from "./pages/homePage";
 import { useSelector } from 'react-redux';
@@ -11,7 +11,7 @@ export default function App() {
         <BrowserRouter>
             <Routes>
                 <Route path='/login' element={isAuth ? <HomePage /> : <LoginPage />} />
-                <Route path='/*' element={isAuth ? <HomePage /> : <Navigate to="/login" />} />
+                <Route path='/*' element={isAuth ? <HomePage /> : <LoginPage />} />
             </Routes>
         </BrowserRouter>
     )
