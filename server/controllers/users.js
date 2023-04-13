@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
+import Message from "../models/Message.js";
 
 // REGISTER
 export const register = async (req, res) => {
@@ -86,8 +87,8 @@ export const acceptFriendRequest = async (req, res) => {
         const { recipientId, requesterId } = req.body;
         const recipient = await User.findById(recipientId);
         const requester = await User.findById(requesterId);
-        const existing = requester.friends.filter(friend => friend.user.toString()===recipientId);
-        if(!existing.length){
+        const existing = requester.friends.filter(friend => friend.user.toString() === recipientId);
+        if (!existing.length) {
             requester.friends.push({
                 user: recipientId,
                 pending: false,
@@ -96,6 +97,14 @@ export const acceptFriendRequest = async (req, res) => {
         }
         const requesterIndex = recipient.friends.findIndex(friend => friend.user.equals(requesterId));
         recipient.friends[requesterIndex].pending = false;
+        const newMessage = new Message({
+            referenceId: recipient.friends[requesterIndex]._id,
+            type: "User",
+            userId: requesterId,
+            content: "has accepted your friend request",
+            from: recipientId,
+        });
+        await newMessage.save()
         await recipient.save();
         await requester.save();
         res.status(201).json(recipient);
@@ -142,8 +151,8 @@ export const fetchFriendRequests = async (req, res) => {
 export const modifyRead = async (req, res) => {
     try {
         const { _id } = req.body;
-        await User.updateOne({ _id: _id, "friends.read": false }, { $set: { "friends.$[].read": true } });
-
+        await User.updateMany({ _id: _id, "friends.read": false }, { $set: { "friends.$[].read": true } });
+        
         res.sendStatus(200);
     } catch (err) {
         res.status(500).json({ error: err.message });

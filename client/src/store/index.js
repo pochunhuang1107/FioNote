@@ -4,6 +4,7 @@ import { setupListeners } from '@reduxjs/toolkit/query/react';
 import { persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist';
 import { userApi } from './apis/userApi';
 import { itemApi } from './apis/itemApi';
+import { messageApi } from './apis/messageApi';
 import authReducer from './slices/authSlice';
 import friendsReducer from './slices/friendsSlice';
 import storage from 'redux-persist/lib/storage';
@@ -19,6 +20,7 @@ const rootReducer = combineReducers({
     friends: friendsReducer,
     [userApi.reducerPath]: userApi.reducer,
     [itemApi.reducerPath]: itemApi.reducer,
+    [messageApi.reducerPath]: messageApi.reducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
@@ -31,28 +33,32 @@ export const store = configureStore({
                 ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
             }
         }).concat(userApi.middleware)
-        .concat(itemApi.middleware);
+            .concat(itemApi.middleware)
+            .concat(messageApi.middleware);
     }
 });
 
 setupListeners(store.dispatch);
 
-export { useCreateUserMutation, 
-        useLoginUserMutation, 
-        useSendFriendRequestMutation, 
-        useFetchFriendRequestQuery,
-        useModifyReadMutation,
-        useAcceptFriendRequestMutation,
-        useDeleteFriendRequestMutation,
-        useFetchFriendsListQuery,
+export {
+    useCreateUserMutation,
+    useLoginUserMutation,
+    useSendFriendRequestMutation,
+    useFetchFriendRequestQuery,
+    useModifyReadMutation,
+    useAcceptFriendRequestMutation,
+    useDeleteFriendRequestMutation,
+    useFetchFriendsListQuery,
 } from './apis/userApi';
-export { useFetchItemsQuery, 
-        useCreateItemMutation, 
-        useCompleteItemMutation, 
-        useRemoveItemMutation ,
-        useAcceptTaskMutation,
-        useDeleteTaskMutation,
-        useFetchTaskQuery,
-        useModifyReadTaskMutation,
-        useSendTaskMutation,
+export {
+    useFetchItemsQuery,
+    useCreateItemMutation,
+    useCompleteItemMutation,
+    useRemoveItemMutation,
+    useAcceptTaskMutation,
+    useDeleteTaskMutation,
+    useFetchTaskQuery,
+    useModifyReadTaskMutation,
+    useSendTaskMutation,
 } from './apis/itemApi';
+export { useFetchMessagesQuery, useModifyReadMessagesMutation } from './apis/messageApi';

@@ -20,14 +20,16 @@ export default function Request({ subject, isRead, id, requesterId, token, accep
     return (
         <div className={itemClasses}>
             {subject}{from ? <div className='text-gray-400'> from {from}</div> : ""}
-            <div className='flex items-center text-xs space-x-1'>
-                <button className={greenButtonClasses} onClick={handleAccept} disabled={acceptResults.isLoading || deleteResults.isLoading}>
-                    Confirm
-                </button>
-                <button className={redButtonClasses} onClick={handleDelete} disabled={acceptResults.isLoading || deleteResults.isLoading}>
-                    Delete
-                </button>
-            </div>
+            {acceptRequest && deleteRequest &&
+                <div className='flex items-center text-xs space-x-1'>
+                    <button className={greenButtonClasses} onClick={handleAccept} disabled={acceptResults.isLoading || deleteResults.isLoading}>
+                        Confirm
+                    </button>
+                    <button className={redButtonClasses} onClick={handleDelete} disabled={acceptResults.isLoading || deleteResults.isLoading}>
+                        Delete
+                    </button>
+                </div>
+            }
         </div>
     )
 }

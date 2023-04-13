@@ -1,4 +1,5 @@
 import Item from "../models/Item.js";
+import Message from "../models/Message.js";
 
 // READ
 export const fetchItems = async (req, res) => {
@@ -52,8 +53,9 @@ export const completeItem = async (req, res) => {
 export const removeItem = async (req, res) => {
     try {
         const { _id } = req.body;
-        await Item.findByIdAndDelete(_id);
 
+        await Item.findByIdAndDelete(_id);
+        
         res.sendStatus(200);
     } catch (err) {
         res.status(500).json({ message: err.message });
@@ -110,6 +112,19 @@ export const acceptTaskRequest = async (req, res) => {
         const taskRequests = await Item.findById(_id);
         taskRequests.pending = false;
         await taskRequests.save();
+
+        const item = await Item.findById(_id);
+        if (item.userId !== item.createdBy){
+            const newMessage = new Message({
+                referenceId: _id,
+                type: "Item",
+                userId: item.createdBy,
+                content: `Task: ${item.description} has been accepted`,
+                from: item.userId,
+            });
+            await newMessage.save();
+        }
+
         res.sendStatus(200);
     } catch (err) {
         res.status(500).json({ message: err.message });
@@ -120,6 +135,19 @@ export const acceptTaskRequest = async (req, res) => {
 export const deleteTaskRequest = async (req, res) => {
     try {
         const { _id } = req.body;
+
+        const item = await Item.findById(_id);
+        if (item.userId !== item.createdBy){
+            const newMessage = new Message({
+                referenceId: _id,
+                type: "Item",
+                userId: item.createdBy,
+                content: `Task: ${item.description} has been declined`,
+                from: item.userId,
+            });
+            await newMessage.save();
+        }
+
         await Item.deleteOne({ _id: _id });
         res.sendStatus(200);
     } catch (err) {

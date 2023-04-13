@@ -6,7 +6,8 @@ import helmet from "helmet";
 import morgan from "morgan";
 import dotenv from "dotenv";
 import userRoutes from "./routes/user.js";
-import itemRoutes from "./routes/items.js"
+import itemRoutes from "./routes/items.js";
+import messageRoutes from "./routes/messages.js";
 import { Server } from "socket.io";
 
 dotenv.config();
@@ -26,6 +27,7 @@ app.use(cors());
 
 app.use("/users", userRoutes);
 app.use("/items", itemRoutes);
+app.use("/messages", messageRoutes);
 
 mongoose.connect(MONGO_URL, {
     useNewUrlParser: true,

@@ -10,6 +10,8 @@ import {
     useDeleteFriendRequestMutation,
     useAcceptTaskMutation,
     useDeleteTaskMutation,
+    useFetchMessagesQuery,
+    useModifyReadMessagesMutation,
 } from '../store';
 import Request from './Request';
 import { socket } from '../socket';
@@ -31,16 +33,18 @@ export default function Notification() {
 
     const { data: tasks, isLoading: taskIsLoading, error: taskError } = useFetchTaskQuery({ _id, token, update });
     const { data, isLoading, error } = useFetchFriendRequestQuery({ _id, token, update });
+    const { data: messages, isLoading: messageIsLoading, error: messageError } = useFetchMessagesQuery({ _id, token, update });
     const [modifyRead] = useModifyReadMutation();
     const [modifyReadTask] = useModifyReadTaskMutation();
+    const [modifyMessageRead] = useModifyReadMessagesMutation();
     const [acceptFriendRequest, acceptFriendResults] = useAcceptFriendRequestMutation();
     const [deleteFriendRequest, deleteFriendResults] = useDeleteFriendRequestMutation();
     const [acceptTask, acceptTaskResults] = useAcceptTaskMutation();
     const [deleteTask, deleteTaskResults] = useDeleteTaskMutation();
-    
+
     useEffect(() => {
         socket.on("receive_message", () => {
-            setUpdate(update+1);
+            setUpdate(update + 1);
         });
         return () => {
             socket.off("receive_message");
@@ -49,8 +53,29 @@ export default function Notification() {
 
     let friendRequests, count = 0;
     let taskRequests, taskCount = 0;
+    let messageNotifications, messageCount = 0;
+    const loaded = !isLoading && data && !taskIsLoading && tasks && !messageIsLoading && messages;
 
-    if (!isLoading && data && !taskIsLoading && tasks) {
+    if (loaded) {
+        const dataArray = Object.entries(messages).map(([key, value]) => ({ key, ...value }));
+        dataArray.sort((b, a) => new Date(a.createdAt) - new Date(b.createdAt));
+        messageNotifications = dataArray.map(message => {
+            return <Request
+                key={message._id}
+                subject={
+                    message.type === 'Item' ? `${message.content} by ${friendsDict[message.from]}`
+                        : `${friendsDict[message.from]} ${message.content}`}
+                isRead={message.read}
+                requesterId={message._id}
+                token={token}
+            />
+        });
+        messageCount = messages.filter(message => !message.read).length;
+    } else if (messageError) {
+        messageNotifications = messageError;
+    }
+
+    if (loaded) {
         const dataArray = Object.entries(data).map(([key, value]) => ({ key, ...value }));
         dataArray.sort((b, a) => new Date(a.createdAt) - new Date(b.createdAt));
         friendRequests = dataArray.map(friendRequest => {
@@ -72,8 +97,7 @@ export default function Notification() {
         friendRequests = error;
     }
 
-
-    if (!taskIsLoading && tasks && !isLoading && data) {
+    if (loaded) {
         const dataArray = Object.entries(tasks).map(([key, value]) => ({ key, ...value }));
         dataArray.sort((b, a) => new Date(a.createdAt) - new Date(b.createdAt));
         taskRequests = dataArray.map(taskRequest => {
@@ -111,13 +135,16 @@ export default function Notification() {
                 if (taskCount) {
                     modifyReadTask({ _id, token });
                 }
+                if (messageCount) {
+                    modifyMessageRead({ _id, token });
+                }
                 setExpanded(false);
             };
         };
 
         document.addEventListener('click', handler);
         return () => document.removeEventListener('click', handler);
-    }, [expanded, _id, token, count, taskCount, modifyRead, modifyReadTask]);
+    }, [expanded, _id, token, count, taskCount, messageCount, modifyRead, modifyReadTask, modifyMessageRead]);
 
     const handleNotificationClicked = (event) => {
         if (!isLoading && !taskIsLoading) {
@@ -134,6 +161,9 @@ export default function Notification() {
                 if (taskCount) {
                     modifyReadTask({ _id, token });
                 }
+                if (messageCount) {
+                    modifyMessageRead({ _id, token });
+                }
             }
         }
     }
@@ -141,8 +171,9 @@ export default function Notification() {
     return (
         <div className='w-7 flex items-center justify-center mr-5' ref={bellRef} onClick={handleNotificationClicked} >
             <div className='text-2xl text-stone-700 absolute cursor-pointer hover:text-stone-800'>
-                {!isLoading && !taskIsLoading && count === 0 && taskCount === 0 && <IoMdNotificationsOutline />}
-                {!isLoading && !taskIsLoading && (count !== 0 || taskCount !== 0) &&
+                {!isLoading && !taskIsLoading && !messageIsLoading && count === 0 && taskCount === 0 && messageCount === 0 &&
+                    <IoMdNotificationsOutline />}
+                {!isLoading && !taskIsLoading && !messageIsLoading && (count !== 0 || taskCount !== 0 || messageCount !== 0) &&
                     <div>
                         <IoMdNotifications />
                         <span className="absolute flex h-3 w-3 top-0 right-0">
@@ -158,6 +189,9 @@ export default function Notification() {
                 <div className='text-xs text-gray-500 select-none text-center'>Task Request</div>
                 <hr />
                 {tasks?.length ? taskRequests : <div className='px-4 py-2 text-sm text-gray-600'>Nothing to show...</div>}
+                <div className='text-xs text-gray-500 select-none text-center'>Other</div>
+                <hr />
+                {messages?.length ? messageNotifications : <div className='px-4 py-2 text-sm text-gray-600'>Nothing to show...</div>}
             </div>)}
         </div>
     )
