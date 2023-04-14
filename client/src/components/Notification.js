@@ -23,7 +23,7 @@ export default function Notification() {
     const [update, setUpdate] = useState(0);
     const { _id, token } = useSelector(state => state.auth);
     const { friends } = useSelector(state => state.friends);
-    let friendsDict;
+    let friendsDict = null;
     if (friends) {
         friendsDict = friends.reduce((acc, { _id, firstName, lastName }) => {
             acc[_id] = `${firstName} ${lastName}`;
@@ -54,7 +54,7 @@ export default function Notification() {
     let friendRequests, count = 0;
     let taskRequests, taskCount = 0;
     let messageNotifications, messageCount = 0;
-    const loaded = !isLoading && data && !taskIsLoading && tasks && !messageIsLoading && messages;
+    const loaded = !isLoading && data && !taskIsLoading && tasks && !messageIsLoading && messages && friendsDict;
 
     if (loaded) {
         const dataArray = Object.entries(messages).map(([key, value]) => ({ key, ...value }));
