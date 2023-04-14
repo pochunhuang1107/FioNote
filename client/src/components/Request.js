@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-
+import { socket } from '../socket';
 
 export default function Request({ subject, isRead, id, requesterId, token, acceptRequest, deleteRequest, acceptResults, deleteResults, from }) {
     const itemClasses = classNames("flex justify-between items-center text-sm select-none px-4 py-2 text-gray-800 hover:bg-gray-100",
@@ -9,12 +9,20 @@ export default function Request({ subject, isRead, id, requesterId, token, accep
     const greenButtonClasses = classNames(buttonClasses, "bg-sky-500 hover:bg-sky-600 text-white");
     const redButtonClasses = classNames(buttonClasses, "bg-gray-200 hover:bg-gray-300 text-gray-600");
 
-    const handleAccept = () => {
-        acceptRequest({ id, requesterId, token });
+    const sendMessage = () => {
+        socket.emit("send_message", {
+            id: requesterId
+        });
+    };
+
+    const handleAccept = async () => {
+        await acceptRequest({ id, requesterId, token });
+        sendMessage();
     }
 
-    const handleDelete = () => {
-        deleteRequest({ id, requesterId, token });
+    const handleDelete = async () => {
+        await deleteRequest({ id, requesterId, token });
+        sendMessage();
     }
 
     return (

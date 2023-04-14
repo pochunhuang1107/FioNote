@@ -119,7 +119,7 @@ export const acceptTaskRequest = async (req, res) => {
                 referenceId: _id,
                 type: "Item",
                 userId: item.createdBy,
-                content: `Task: ${item.description} has been accepted`,
+                content: `Task: '${item.description}' has been accepted`,
                 from: item.userId,
             });
             await newMessage.save();
@@ -142,7 +142,7 @@ export const deleteTaskRequest = async (req, res) => {
                 referenceId: _id,
                 type: "Item",
                 userId: item.createdBy,
-                content: `Task: ${item.description} has been declined`,
+                content: `Task: '${item.description}' has been declined`,
                 from: item.userId,
             });
             await newMessage.save();

@@ -16,9 +16,14 @@ export const friendsSlice = createSlice({
         },
         setFriends: (state, action) => {
             state.friends = action.payload.friends;
-        }
+        },
+        removeFriends: (state, action) => {
+            state.friends = state.friends.filter(friend => {
+                return friend._id !== action.payload.user;
+            })
+        },
     }
 })
 
-export const { setFriends, setSelected } = friendsSlice.actions;
+export const { setFriends, setSelected, removeFriends } = friendsSlice.actions;
 export default friendsSlice.reducer;

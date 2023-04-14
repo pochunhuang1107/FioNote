@@ -63,8 +63,8 @@ export default function Notification() {
             return <Request
                 key={message._id}
                 subject={
-                    message.type === 'Item' ? `${message.content} by ${friendsDict[message.from]}`
-                        : `${friendsDict[message.from]} ${message.content}`}
+                    message.type === 'Item' ? `${message.content} by ${friendsDict[message.from] || "someone"}`
+                        : `${friendsDict[message.from] || "Someone"} ${message.content}`}
                 isRead={message.read}
                 requesterId={message._id}
                 token={token}

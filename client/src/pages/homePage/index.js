@@ -21,15 +21,15 @@ export default function HomePage() {
 
     useEffect(() => {
         if (_id) {
+            socket.connect();
             socket.on("connect", () => {
                 socket.emit("user connected", _id);
             });
-            socket.connect();
         }
         return () => {
+            socket.disconnect();
             if (_id) {
                 socket.off("connect");
-                socket.disconnect();
             }
         };
     }, [_id]);
