@@ -10,7 +10,7 @@ import { socket } from '../../socket';
 
 export default function HomePage() {
     const { firstName, _id } = useSelector(state => state.auth);
-    const name = String(firstName.charAt(0)).toUpperCase() + String(firstName.slice(1,));
+    const name = firstName.charAt(0).toUpperCase() + firstName.slice(1,);
     const dispatch = useDispatch();
 
     let date = new Date().toLocaleDateString("en-US", {
@@ -20,17 +20,13 @@ export default function HomePage() {
     });
 
     useEffect(() => {
-        if (_id) {
-            socket.connect();
-            socket.on("connect", () => {
-                socket.emit("user connected", _id);
-            });
-        }
+        socket.connect();
+        socket.on("connect", () => {
+            socket.emit("user connected", _id);
+        });
         return () => {
             socket.disconnect();
-            if (_id) {
-                socket.off("connect");
-            }
+            socket.off("connect");
         };
     }, [_id]);
 
