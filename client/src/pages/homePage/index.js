@@ -20,7 +20,9 @@ export default function HomePage() {
     });
 
     useEffect(() => {
-        socket.connect();
+        if (!socket.connected) {
+            socket.connect();
+        }
         socket.on("connect", () => {
             socket.emit("user connected", _id);
         });
