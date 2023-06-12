@@ -1,6 +1,6 @@
 # Summary of the project
 
-This is a MERN stack web application that helps users to keep track of their daily to-do items with the functionality to check complete and delete items. It offers friend request functionality where a user can send a friend request, and another user can choose to accept or decline. It also comes with the 'send task' functionality where a user can send task to a friend from their friends list. The application requires registration of personal account and login. A successful login will prompt a token returned from the server and store in the local storage of your devices until logout.
+This is a MERN stack web application that helps users to keep track of their daily to-do items with the functionality to check complete and delete items. It offers friend request functionality where a user can send a friend request, and another user can choose to accept or decline. It also comes with the 'send task' functionality where a user can send task to a friend from their friends list. All request types to the other users will notify in real time. The application requires registration of personal account and login. A successful login will prompt a token returned from the server and store in the local storage of your devices until logout.
 
 ## Live demo site
 
