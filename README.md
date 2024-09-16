@@ -4,7 +4,7 @@ This is a MERN stack web application that helps users to keep track of their dai
 
 ## Live demo site
 
-https://fionote.onrender.com
+http://fionote.com
 
 ## Available Scripts for client side
 
